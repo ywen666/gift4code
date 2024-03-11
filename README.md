@@ -21,6 +21,11 @@ accelerate launch  main.py \
   --save_generations
 ```
 
+if run correctly, the initialization of the task should download the arcade datasets under
+```bash
+${PREFIX}/bigcode-evaluation-harness/bigcode_eval/tasks/arcade_assets
+```
+
 ### Evaluation only
 
 Need to convert the saved generation json file to the jsonl that can be used in the Arcade evaluation, [arcade-nl2code](https://github.com/google-research/arcade-nl2code.git)
