@@ -2,15 +2,18 @@ import inspect
 import json
 import os
 import warnings
+from pathlib import Path
 
 from bigcode_eval import tasks
 from bigcode_eval.generation import parallel_generations
+from pathlib import Path
+from human_eval.data import write_jsonl
 
 _WARNING = """
 ################################################################################
                                   !!!WARNING!!!
 ################################################################################
-The "code_eval"/"apps_metric" you are about to use, execute untrusted 
+The "code_eval"/"apps_metric" you are about to use, execute untrusted
 model-generated code in Python.
 Although it is highly unlikely that model-generated code will do something
 overtly malicious in response to this test suite, model-generated code may act
@@ -19,7 +22,7 @@ Users are strongly encouraged to sandbox this evaluation suite so that it
 does not perform destructive actions on their host or network. For more
 information on how OpenAI sandboxes its code, see the paper "Evaluating Large
 Language Models Trained on Code" (https://arxiv.org/abs/2107.03374).
-Once you have read this disclaimer and taken appropriate precautions, set the argument 
+Once you have read this disclaimer and taken appropriate precautions, set the argument
 "allow_code_execution" to True.
 ################################################################################\
 """
@@ -61,19 +64,23 @@ class Evaluator:
             n_tasks=n_tasks,
             args=self.args,
         )
+        if isinstance(generations, tuple):
+            generations, probs = generations
+        else:
+            probs = None
         if len(generations[0]) > self.args.n_samples:
             generations = [l[: self.args.n_samples] for l in generations]
             warnings.warn(
                 f"Number of tasks wasn't proportional to number of devices, we removed extra predictions to only keep nsamples={self.args.n_samples}"
             )
-        return generations, references
+        return generations, references, probs
 
     def evaluate(self, task_name):
         task = tasks.get_task(task_name, self.args)
         if task.requires_execution and not self.allow_code_execution:
             raise ValueError(_WARNING)
 
-        generations, references = self.generate_text(task_name)
+        generations, references, probs = self.generate_text(task_name)
 
         if self.accelerator.is_main_process:
             if not self.args.load_generations_path:
@@ -83,6 +90,16 @@ class Evaluator:
                         print(
                             f"generations were saved at {self.args.save_generations_path}"
                         )
+                    if probs:
+                        probs_path = Path(self.args.save_generations_path)
+                        probs_path = probs_path.with_name(
+                            probs_path.stem + "_probs" + ".jsonl")
+                        saved_probs = []
+                        for task_probs in probs:
+                            saved_probs.append(
+                                {idx: score for idx, score in enumerate(task_probs)}
+                            )
+                        write_jsonl(str(probs_path), saved_probs)
                 if self.args.save_references:
                     with open("references.json", "w") as fp:
                         json.dump(references, fp)
@@ -93,5 +110,12 @@ class Evaluator:
             if self.allow_code_execution and task.requires_execution:
                 os.environ["HF_ALLOW_CODE_EVAL"] = "1"
             print("Evaluating generations...")
+            if self.args.postprocess:
+                processed_generations = [[] for _ in range(len(generations))]
+                for idx, task_generations in enumerate(generations):
+                    for gen in task_generations:
+                        processed_generations[idx].append(
+                            task.postprocess_generation(gen, idx))
+                generations = processed_generations
             results = task.process_results(generations, references)
             return results

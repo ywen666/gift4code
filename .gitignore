@@ -166,3 +166,7 @@ cython_debug/
 # Script outputs
 evaluation*.json
 generations*.json
+
+bigcode_eval/tasks/arcade_assets
+results
+scripts

@@ -240,6 +240,7 @@ def complete_code(
     """
 
     gen_token_dict = defaultdict(list)  # dict of list of generated tokens
+    gen_probs_dict = defaultdict(list)  # dict of list of generated tokens
     for step, batch in tqdm(
         enumerate(dataloader),
         total=math.ceil(
@@ -255,8 +256,8 @@ def complete_code(
                 gen_kwargs["stopping_criteria"][0].start_length = max_len
             if hasattr(task, "max_length_multiplier") and task.max_length_multiplier:
                 idx = 1 if task.stop_words else 0
-                gen_kwargs["stopping_criteria"][idx].input_length = batch["input_len"].max().item()                
-            
+                gen_kwargs["stopping_criteria"][idx].input_length = batch["input_len"].max().item()
+
             inputs = batch["ids"][:, : batch["input_len"]]
             if "ids_encoder" in batch:
                 if is_wrapped:
@@ -266,6 +267,8 @@ def complete_code(
                         num_return_sequences=batch_size,
                         decoder_start_token_id=tokenizer.pad_token_id,
                         eos_token_id=tokenizer.eos_token_id,
+                        output_scores=True,
+                        return_dict_in_generate=True,
                         **gen_kwargs,
                     )
                 else:
@@ -275,6 +278,8 @@ def complete_code(
                         num_return_sequences=batch_size,
                         decoder_start_token_id=tokenizer.pad_token_id,
                         eos_token_id=tokenizer.eos_token_id,
+                        output_scores=True,
+                        return_dict_in_generate=True,
                         **gen_kwargs,
                     )
             else:
@@ -283,16 +288,32 @@ def complete_code(
                     generated_tokens = accelerator.unwrap_model(model).generate(
                         input_ids=inputs,
                         num_return_sequences=batch_size,
+                        output_scores=True,
+                        return_dict_in_generate=True,
                         **gen_kwargs,
                     )
                 else:
                     generated_tokens = model.generate(
                         input_ids=inputs,
                         num_return_sequences=batch_size,
+                        output_scores=True,
+                        return_dict_in_generate=True,
                         **gen_kwargs,
                     )
             # each task is generated batch_size times
             generated_tasks = batch["task_id"].repeat(batch_size)
+            if isinstance(generated_tokens, dict):
+                transition_scores = model.compute_transition_scores(
+                    generated_tokens.sequences,
+                    generated_tokens.scores,
+                    normalize_logits=True
+                )
+                generated_tokens = generated_tokens.sequences
+            transition_scores = accelerator.pad_across_processes(
+                transition_scores, dim=1, pad_index=-100
+            )
+            transition_scores = accelerator.gather(transition_scores)
+            
             generated_tokens = accelerator.pad_across_processes(
                 generated_tokens, dim=1, pad_index=tokenizer.pad_token_id
             )
@@ -305,17 +326,20 @@ def complete_code(
 
             for sample, generated_tokens in zip(generated_tasks, generated_tokens):
                 gen_token_dict[sample].append(generated_tokens)
+            for sample, scores in zip(generated_tasks, transition_scores):
+                gen_probs_dict[sample].append(scores.cpu().float().numpy())
 
     code_gens = [[] for _ in range(n_tasks)]
+    probs = [[] for _ in range(n_tasks)]
     for sample, generated_tokens in gen_token_dict.items():
-        for s in generated_tokens:
+        for idx, s in enumerate(generated_tokens):
             if INFILL_MODE or tokenizer.eos_token in task.stop_words:
                 if s[0] == tokenizer.bos_token_id:
                     s = s[1:]
                 # Treat eos token as a regular stop word not removing it from the output
                 # If it's removed it may have the effect of removing it in the middle of a
                 # longer generation in case a batch size > 1 is used, which will result in
-                # a wrong generation as it won't be used for splitting lateron 
+                # a wrong generation as it won't be used for splitting lateron
                 gen_code = tokenizer.decode(
                     s, skip_special_tokens=False, clean_up_tokenization_spaces=False
                 )
@@ -338,8 +362,9 @@ def complete_code(
                     "model output is not postprocessed, this might lower evaluation scores"
                 )
                 code_gens[sample].append(gen_code)
+            probs[sample].append(gen_probs_dict[sample][idx].tolist())
 
-    return code_gens
+    return code_gens, probs
 
 
 import re
