@@ -78,7 +78,7 @@ accelerate launch main.py \
 --trust_remote_code \
 --allow_code_execution \
 --precision bf16 \
---save_generations_path results/starcoder2_temp${TEMP}.json \
+--save_generations_path starcoder2_temp${TEMP}.json \
 --generation_only \
 --max_memory_per_gpu auto \
 --save_generations
