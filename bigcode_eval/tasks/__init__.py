@@ -8,7 +8,7 @@ from . import (apps, arcade, codexglue_code_to_text, codexglue_text_to_text, con
 
 TASK_REGISTRY = {
     **apps.create_all_tasks(),
-    "arcade": arcade.Arcade,
+    **arcade.create_all_tasks(),
     **codexglue_code_to_text.create_all_tasks(),
     **codexglue_text_to_text.create_all_tasks(),
     **multiple.create_all_tasks(),
