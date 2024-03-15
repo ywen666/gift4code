@@ -159,6 +159,17 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-wandb/
-results/
-*tfrecord
+.vscode/
+.trunk
+.DS_Store
+
+# Script outputs
+eval/evaluation*.json
+eval/generations*.json
+eval/bigcode_eval/tasks/arcade_assets
+eval/results
+eval/scripts
+
+finetune/wandb/
+finetune/results/
+finetune/*tfrecord
