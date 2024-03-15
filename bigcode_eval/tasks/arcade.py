@@ -34,26 +34,8 @@ _CITATION = """
 
 
 def create_all_tasks():
-    def create_task(key, mode):
-        class DS1000(GeneralDS1000):
-            def __init__(self):
-                super().__init__(key, mode)
-
-        return DS1000
-
     return {
-        f"ds1000-{key.lower()}-{mode.lower()}": create_task(key, mode)
-        for key in [
-            "All",
-            "Numpy",
-            "Pandas",
-            "Scipy",
-            "Matplotlib",
-            "Sklearn",
-            "Tensorflow",
-            "Pytorch",
-        ]
-        for mode in ["Completion", "Insertion"]
+        f"arcade-{mode}": Arcade(mode) for mode in ["base", "iosummary", "ioexample", "iotype"]
     }
 
 
@@ -61,21 +43,24 @@ class Arcade(Task):
     DATASET_PATH = None
     DATASET_NAME = None
 
-    def __init__(self):
+    def __init__(self, mode):
         super().__init__(
             stop_words=["# In[ ]:"], requires_execution=True
         )
+        self.mode = mode
         self._dir = pathlib.Path(__file__).parent / "arcade_assets"
         self._dir.mkdir(parents=True, exist_ok=True)
         self._src = self._dir / "arcade_nl2code"
         self._data_code = self._src / "annotated_dataset"
         self._data_root = self._data_code / "dataset/new_tasks/derived_datasets"
-        self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix-1.maxctxcell-1.json"
-
+        if mode not in ["base", "iosummary", "ioexample", "iotype"]:
+            raise ValueError("mode has to be either base, iosummary, ioexample or iotype")
+        self.data_name = "arcade_{mode}.json"
+        #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix-1.maxctxcell-1.json"
         #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix900.maxctxcell-1.e0_1_4_5.vanilla_prompting.json"
         self.artifacts_path = self._data_code / "dataset/new_tasks/artifacts"
-        self._download_source()
-        self._download_artifacts()
+        #self._download_source()
+        #self._download_artifacts()
 
     #def _download_source(self):
     #    url = "https://github.com/HKUNLP/DS-1000/blob/49c1c543ada8b58138181333cdc62e613204efcf/ds1000.py?raw=true"
