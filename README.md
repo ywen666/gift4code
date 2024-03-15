@@ -1,8 +1,11 @@
 
 Adding arcade evaluation based on [bigcode_eval](https://github.com/bigcode-project/bigcode-evaluation-harness/tree/main), haven't tested thoroughly.
+Run with torch2.1.2 + cuda12.1
 
 ## Generation only
-The folder structure looks like the following
+`pip install -e .` to install the bigcode_eval package.
+
+To run inference on arcade task (base, iosummary, ioexample, iotype), the folder structure looks like the following
 
 ### Folder Structure
 ```
