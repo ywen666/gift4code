@@ -68,7 +68,7 @@ MODE=base
 TEMP=0.8
 
 accelerate launch main.py \
---model bigcode/starcoder2 \
+--model bigcode/starcoder2-15b \
 --tasks arcade-${MODE} \
 --max_length_generation 2560 \
 --temperature ${TEMP} \
