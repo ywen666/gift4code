@@ -15,14 +15,6 @@ import tensorflow as tf
 IGNORE_INDEX = -100
 EOT_TOKEN = "<|EOT|>"
 
-def build_instruction_prompt(instruction: str):
-    return '''
-You are an AI programming assistant, utilizing the DeepSeek Coder model, developed by DeepSeek Company, and you only answer questions related to computer science. For politically sensitive questions, security and privacy issues, and other non-computer science questions, you will refuse to answer.
-### Instruction:
-{}
-### Response:
-'''.format(instruction.strip()).lstrip()
-
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default="deepseek-ai/deepseek-coder-6.7b-instruct")
@@ -154,12 +146,6 @@ class DataCollatorForSupervisedDataset(object):
         )
 
 def train_tokenize_function(examples, tokenizer):
-    #sources = [
-    #    build_instruction_prompt(instruction)
-    #    for instruction in examples['instruction']
-    #]
-    #targets = [f"{output}\n{EOT_TOKEN}" for output in examples['output']]
-    #data_dict = preprocess(sources, targets, tokenizer)
     targets = [f"{output}\n{EOT_TOKEN}" for output in examples['targets']]
     data_dict = preprocess(targets, tokenizer)
     return data_dict
