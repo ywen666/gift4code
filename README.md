@@ -5,7 +5,13 @@ Run with torch2.1.2 + cuda12.1
 ## Generation only
 `pip install -e .` to install the bigcode_eval package.
 
-To run inference on arcade task (base, iosummary, ioexample, iotype), the folder structure looks like the following
+To run inference on arcade task (base, iosummary, ioexample, iotype), create `arcade_assets` under `bigcode_eval_arcade/bigcode_eval/tasks`
+
+Then under `arcade_assets`, run 
+
+`git clone https://github.com/google-research/arcade-nl2code.git`.
+
+the folder structure looks like the following
 
 ### Folder Structure
 ```
