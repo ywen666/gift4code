@@ -1,0 +1,8 @@
+torch>=2.0.1
+tokenizers>=0.14.0
+git+https://github.com/huggingface/transformers.git
+accelerate
+attrdict
+tqdm
+deepspeed
+datasets
