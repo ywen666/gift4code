@@ -1,9 +1,14 @@
 git+https://github.com/huggingface/transformers.git
+torch>=2.1.2
 accelerate==0.27.1
 datasets>=2.16.1
 huggingface_hub==0.20.3
 evaluate>=0.3.0
 pyext==0.7
+tokenizers>=0.14.0
 mosestokenizer==1.0.0
 huggingface_hub>=0.11.1
 fsspec<2023.10.0
+attrdict
+tqdm
+deepspeed
