@@ -62,7 +62,7 @@ class GeneralArcade(Task):
         self._data_root = self._data_code / "dataset/new_tasks/derived_datasets"
         if mode not in ["base", "iosummary", "ioexample", "iotype"]:
             raise ValueError("mode has to be either base, iosummary, ioexample or iotype")
-        self.data_name = "arcade_{mode}.json"
+        self.data_name = f"arcade_{mode}.json"
         #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix-1.maxctxcell-1.json"
         #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix900.maxctxcell-1.e0_1_4_5.vanilla_prompting.json"
         self.artifacts_path = self._data_code / "dataset/new_tasks/artifacts"
