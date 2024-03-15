@@ -27,9 +27,9 @@ bigcode_eval_arcade(root)
 
 - **arcade_assets/**: Root directory for all assets related to the arcade project. 
   
-- **arcade_nl2code/**: Subdirectory within `arcade_assets` dedicated to the natural language to code conversion for arcade games. It serves as the main container for the project's annotated datasets and related files.
+- **arcade_nl2code/**: Clone from [arcade-nl2code](https://github.com/google-research/arcade-nl2code.git)
 
-- **annotated_dataset/**: Contains all datasets annotated for the project, divided into different structures and types as detailed below.
+- **annotated_dataset/**: Contains all datasets, divided into different structures and types as detailed below.
 
   - **dataset/**:
   
