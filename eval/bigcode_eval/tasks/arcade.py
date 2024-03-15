@@ -34,12 +34,19 @@ _CITATION = """
 
 
 def create_all_tasks():
+    def create_task(mode):
+        class Arcade(GeneralArcade):
+            def __init__(self):
+                super().__init__(mode)
+                
+        return Arcade   
+        
     return {
-        f"arcade-{mode}": Arcade(mode) for mode in ["base", "iosummary", "ioexample", "iotype"]
+        f"arcade-{mode}": create_task(mode) for mode in ["base", "iosummary", "ioexample", "iotype"]
     }
 
 
-class Arcade(Task):
+class GeneralArcade(Task):
     DATASET_PATH = None
     DATASET_NAME = None
 
