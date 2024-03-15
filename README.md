@@ -7,7 +7,7 @@ Run with torch2.1.2 + cuda12.1
 1. **Install Dependencies**
 
    ```bash
-   pip install -e .
+   pip install -r requirements.txt && pip install -e .
    ```
 
    This will install the required `bigcode_eval` package.
