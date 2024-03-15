@@ -82,6 +82,7 @@ accelerate launch main.py \
 --generation_only \
 --max_memory_per_gpu auto \
 --save_generations
+#--limit 30 \ #Uncomment this to run inference on only first 30 examples for prototyping
 ```
 
 This command will generate code samples for the specified `MODE` (e.g., `base`, `iosummary`, `ioexample`, `iotype`) using the `bigcode/starcoder2` model with a temperature of `0.8`. The generated samples will be saved in the `results/starcoder2_temp${TEMP}.json` file.
