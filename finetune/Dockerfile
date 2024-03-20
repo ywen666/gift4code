@@ -1,6 +1,9 @@
 # Use the specified PyTorch image with CUDA
 FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
+# Install git
+RUN apt-get update && apt-get install -y git
+
 # Clone the specified repository
 RUN git clone https://github.com/ywen666/gift4code.git
 
