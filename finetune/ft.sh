@@ -1,9 +1,9 @@
-DATA_PATH="gift4code.tfrecord"
-OUTPUT_PATH="results"
-MODEL_PATH="deepseek-ai/deepseek-coder-6.7b-instruct"
-MODEL_PATH="deepseek-ai/deepseek-coder-33b-instruct"
-MODEL_PATH="bigcode/starcoder2-3b"
-MODEL_PATH="bigcode/starcoder2-15b"
+#DATA_PATH="gift4code.tfrecord"
+#OUTPUT_PATH="results"
+#MODEL_PATH="deepseek-ai/deepseek-coder-6.7b-instruct"
+#MODEL_PATH="deepseek-ai/deepseek-coder-33b-instruct"
+#MODEL_PATH="bigcode/starcoder2-3b"
+#MODEL_PATH="bigcode/starcoder2-15b"
 
 #CUDA_VISIBLE_DEVICES=0 python finetune.py \
 deepspeed finetune.py \
