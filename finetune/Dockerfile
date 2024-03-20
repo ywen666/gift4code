@@ -4,6 +4,9 @@ FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 # Clone the specified repository
 RUN git clone https://github.com/ywen666/gift4code.git
 
+WORKDIR /workspace/gift4code
+RUN pip install -r requirements.txt
+
 # Set the working directory to the 'finetune' directory within the cloned repo
 WORKDIR /workspace/gift4code/finetune
 
