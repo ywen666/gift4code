@@ -8,8 +8,6 @@ RUN apt -y update
 RUN apt install -y libaio-dev git
 RUN python3 -m pip install --no-cache-dir --upgrade pip
 
-ARG REF=main
-
 # Install latest release PyTorch
 # (PyTorch must be installed before pre-compiling any DeepSpeed c++/cuda ops.)
 # (https://www.deepspeed.ai/tutorials/advanced-install/#pre-install-deepspeed-ops)
