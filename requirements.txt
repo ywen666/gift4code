@@ -13,3 +13,4 @@ fsspec<2023.10.0
 attrdict
 tqdm
 deepspeed
+human-eval
