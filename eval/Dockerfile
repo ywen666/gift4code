@@ -17,6 +17,7 @@ ENV OUTPUT_PATH=/workspace/gift4code/eval/results
 ENV MODEL_PATH=bigcode/starcoder2-15b
 
 RUN python3 -m pip uninstall -y torch_xla
+RUN python3 -m pip install human-eval
 
 # Execute the script
 CMD ["bash", "infer.sh"]
