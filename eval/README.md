@@ -21,7 +21,7 @@ Run with torch2.1.2 + cuda12.1
    The folder structure should look like this:
 
    ```
-   bigcode_eval_arcade/
+   eval/
    ├── bigcode_eval/
    │   ├── tasks/
    │   │   ├── arcade_assets/
