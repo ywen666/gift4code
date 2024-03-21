@@ -7,8 +7,8 @@ accelerate launch main.py \
 --max_length_generation 2560 \
 --temperature ${TEMP} \
 --do_sample True \
---n_samples 10 \
---batch_size 1 \
+--n_samples 40 \
+--batch_size 10 \
 --trust_remote_code \
 --allow_code_execution \
 --precision bf16 \
