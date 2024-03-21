@@ -173,3 +173,4 @@ eval/scripts
 finetune/wandb/
 finetune/results/*
 finetune/*tfrecord
+*.json

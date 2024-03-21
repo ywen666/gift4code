@@ -12,9 +12,9 @@ accelerate launch main.py \
 --trust_remote_code \
 --allow_code_execution \
 --precision bf16 \
---save_generations_path ${OUTPUT_PATH}/starcoder2_temp${TEMP}.json \
+--save_generations_path ${OUTPUT_PATH}/starcoder2_arcade${MODE}_temp${TEMP}.json \
 --generation_only \
 --max_memory_per_gpu auto \
 --limit 2 \
 --save_generations
-#Uncomment this to run inference on only first 30 examples for prototyping
+#Uncomment --limit 2 to run inference on only first 30 examples for prototyping
