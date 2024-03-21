@@ -13,7 +13,7 @@ WORKDIR /workspace/gift4code/eval
 RUN pip3 install .
 
 ENV HF_HOME=/workspace/huggingface
-ENV OUTPUT_PATH=/workspace/gift4code/eval/results
+ENV OUTPUT_PATH=/workspace/gift4code/eval
 ENV MODEL_PATH=bigcode/starcoder2-15b
 
 RUN python3 -m pip uninstall -y torch_xla
