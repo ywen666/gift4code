@@ -1,5 +1,7 @@
 # Use the specified PyTorch image with CUDA
 FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
+#Use the following one if the above has deepspeed error
+#FROM runpod/pytorch:2.1.1-py3.10-cuda12.1.1-devel-ubuntu22.04
 
 # Install git
 RUN apt-get update && apt-get install -y git
