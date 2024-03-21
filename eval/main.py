@@ -308,7 +308,7 @@ def main():
                 raise ValueError("No eos_token or bos_token found")
         try:
             tokenizer.pad_token = tokenizer.eos_token
-            
+
         # Some models like CodeGeeX2 have pad_token as a read-only property
         except AttributeError:
             print("Not setting pad_token to eos_token")
@@ -329,7 +329,7 @@ def main():
             if args.generation_only:
                 if accelerator.is_main_process:
                     print("generation mode only")
-                generations, references = evaluator.generate_text(task)
+                generations, references, _ = evaluator.generate_text(task)
                 if accelerator.is_main_process:
                     with open(args.save_generations_path, "w") as fp:
                         json.dump(generations, fp)
