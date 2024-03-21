@@ -15,6 +15,6 @@ accelerate launch main.py \
 --save_generations_path ${OUTPUT_PATH}/starcoder2_arcade${MODE}_temp${TEMP}.json \
 --generation_only \
 --max_memory_per_gpu auto \
---limit 2 \
 --save_generations
+#--limit 2 \
 #Uncomment --limit 2 to run inference on only first 30 examples for prototyping
