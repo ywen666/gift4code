@@ -35,7 +35,7 @@ class TooLongFunctionCriteria(StoppingCriteria):
     def __call__(self, input_ids, scores, **kwargs):
         """Returns true if generated sequence is too long."""
         return input_ids.shape[1] > int(self.input_length * self.multiplier)
-        
+
 
 def parallel_generations(task, dataset, accelerator, model, tokenizer, n_tasks, args):
     if args.load_generations_path:
@@ -56,7 +56,8 @@ def parallel_generations(task, dataset, accelerator, model, tokenizer, n_tasks, 
         "temperature": args.temperature,
         "top_p": args.top_p,
         "top_k": args.top_k,
-        "max_length": args.max_length_generation,
+        #"max_length": args.max_length_generation,
+        "max_new_tokens": args.max_length_generation,
     }
     stopping_criteria = []
     # The input_length / start_length set to 0 for now will be adjusted later
@@ -75,7 +76,7 @@ def parallel_generations(task, dataset, accelerator, model, tokenizer, n_tasks, 
         stopping_criteria.append(
             TooLongFunctionCriteria(0, task.max_length_multiplier)
         )
-    
+
     if stopping_criteria:
         gen_kwargs["stopping_criteria"] = StoppingCriteriaList(stopping_criteria)
 

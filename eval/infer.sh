@@ -4,7 +4,7 @@ TEMP=0.8
 accelerate launch main.py \
 --model bigcode/starcoder2-15b \
 --tasks arcade-${MODE} \
---max_length_generation 2560 \
+--max_length_generation 128 \
 --temperature ${TEMP} \
 --do_sample True \
 --n_samples 40 \
