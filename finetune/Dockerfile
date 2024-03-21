@@ -9,9 +9,6 @@ RUN apt install -y libaio-dev git
 RUN python3 -m pip install --no-cache-dir --upgrade pip
 
 ARG REF=main
-#RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
-
-#RUN python3 -m pip install --no-cache-dir ./transformers[deepspeed-testing]
 
 # Install latest release PyTorch
 # (PyTorch must be installed before pre-compiling any DeepSpeed c++/cuda ops.)
@@ -24,13 +21,7 @@ RUN python3 -m pip uninstall -y transformer-engine
 # Uninstall `torch-tensorrt` shipped with the base image
 RUN python3 -m pip uninstall -y torch-tensorrt
 
-# Pre-build **latest** DeepSpeed, so it would be ready for testing (otherwise, the 1st deepspeed test will timeout)
 RUN python3 -m pip uninstall -y deepspeed
-# This has to be run (again) inside the GPU VMs running the tests.
-# The installation works here, but some tests fail, if we don't pre-build deepspeed again in the VMs running the tests.
-# TODO: Find out why test fail.
-#RUN DS_BUILD_CPU_ADAM=1 DS_BUILD_FUSED_ADAM=1 python3 -m pip install deepspeed --global-option="build_ext" --global-option="-j8" --no-cache -v --disable-pip-version-check 2>&1
-#RUN DS_BUILD_CPU_ADAM=1 DS_BUILD_FUSED_ADAM=1 
 RUN python3 -m pip install deepspeed
 
 # Clone the specified repository
