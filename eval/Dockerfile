@@ -1,17 +1,3 @@
-FROM ubuntu:22.04
-
-RUN apt-get update && apt-get install -y python3 python3-pip
-
-COPY . /app
-
-WORKDIR /app
-
-RUN test -f /app/generations.json && rm /app/generations.json || true
-
-RUN pip3 install .
-
-CMD ["python3", "main.py"]
-
 FROM nvcr.io/nvidia/pytorch:23.04-py3
 ARG PYTORCH='2.1.2'
 # Example: `cu102`, `cu113`, etc.
@@ -41,14 +27,14 @@ RUN git clone https://github.com/ywen666/gift4code.git
 WORKDIR /workspace/gift4code
 RUN pip install -r requirements.txt
 
-# Set the working directory to the 'finetune' directory within the cloned repo
+# Set the working directory to the 'eval' directory within the cloned repo
 WORKDIR /workspace/gift4code/eval
 
-# Set the required environment variables (replace <value> with actual paths/values)
+RUN pip3 install .
+
 ENV HF_HOME=/workspace/huggingface
-ENV DATA_PATH=/workspace/gift4code/finetune/gift4code.tfrecord
-ENV OUTPUT_PATH=/workspace/finetune/gift4code/results
+ENV OUTPUT_PATH=/workspace/gift4code/eval/results
 ENV MODEL_PATH=bigcode/starcoder2-15b
 
 # Execute the script
-CMD ["bash", "ft.sh"]
+CMD ["bash", "infer.sh"]
