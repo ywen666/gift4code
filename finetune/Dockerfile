@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM nvcr.io/nvidia/pytorch:23.04-py3
 ARG PYTORCH='2.1.2'
 # Example: `cu102`, `cu113`, etc.
