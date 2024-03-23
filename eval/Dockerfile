@@ -20,4 +20,4 @@ RUN python3 -m pip uninstall -y torch_xla
 RUN python3 -m pip install human-eval
 
 # Execute the script
-CMD ["bash", "infer.sh"]
+CMD ["bash", "scripts/infer.sh"]
