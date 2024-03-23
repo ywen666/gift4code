@@ -1,5 +1,3 @@
-#FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/pytorch-gpu.2-2.py310
-#FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/pytorch-gpu.2-1.py310
 FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/base-cu121.py310
 
 ARG PYTORCH='2.1.2'
@@ -18,25 +16,25 @@ RUN pip uninstall -y transformer-engine
 RUN pip uninstall -y torch-tensorrt
 
 RUN pip uninstall -y deepspeed
-RUN pip install deepspeed
+RUN pip --no-cache-dir install deepspeed
+
+RUN gsutil version
 
 # Clone the specified repository
 WORKDIR /workspace
-RUN git clone https://github.com/ywen666/gift4code.git
+COPY . /workspace
+RUN pip --no-cache-dir install -r /workspace/requirements.txt
 
-WORKDIR /workspace/gift4code
-RUN pip install -r requirements.txt
+# Make 1000 UID and root user as owners of the workspace.
+RUN chown -R 1000:root /workspace && chmod -R 775 /workspace
 
-# Set the working directory to the 'finetune' directory within the cloned repo
-WORKDIR /workspace/gift4code/finetune
-
-# Set the required environment variables (replace <value> with actual paths/values)
-ENV HF_HOME=/workspace/huggingface
-ENV TF_DATA_PATH=/workspace/gift4code/finetune/gift4code.tfrecord
-ENV DATA_PATH=/workspace/gift4code/finetune/gift4code.json
-ENV OUTPUT_PATH=/workspace/gift4code/finetune/results
-ENV MODEL_PATH=bigcode/starcoder2-15b
-
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/conda/lib/"
+ENV HUGGINGFACE_OFFLINE=1
+ENV HF_DATASETS_OFFLINE=1
+ENV TRANSFORMERS_OFFLINE=1
+ENV TRITON_CACHE_DIR="/tmp/triton"
+# ENV TRANSFORMERS_CACHE="/tmp/transformer"
+ENV HF_HOME="/tmp/transformer"
 
 # Execute the script
-CMD ["bash", "ft.sh"]
+ENTRYPOINT ["python3", "entrypoint.py"]

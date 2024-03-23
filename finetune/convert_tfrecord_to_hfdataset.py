@@ -1,3 +1,4 @@
+import argparse
 import os
 import tensorflow as tf
 from datasets import load_dataset
@@ -36,8 +37,17 @@ def tfrecord_to_datasets(tfrecord_files):
     return hf_dataset
 
 
-# Save hf_dataset to a JSON file
-hf_dataset = tfrecord_to_datasets([os.getenv("TF_DATA_PATH")])
-json_path = os.getenv("DATA_PATH")
-hf_dataset.to_json(json_path)
+def main():
+    # Save hf_dataset to a JSON file
+    parser = argparse.ArgumentParser(description='Convert TFRecord to JSON')
+    parser.add_argument('--tf_data_path', type=str, required=True, help='Path to the TFRecord file')
+    parser.add_argument('--json_path', type=str, required=True, help='Path where the JSON file will be saved')
 
+    args = parser.parse_args()
+
+    hf_dataset = tfrecord_to_datasets([args.tf_data_path])
+    hf_dataset.to_json(args.json_path)
+
+
+if __name__ == '__main__':
+    main()

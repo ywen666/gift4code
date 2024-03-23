@@ -70,6 +70,7 @@ def tfrecord_to_datasets(tfrecord_files):
 
 def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str):
     """Collects the state dict and dump to disk."""
+    print(f'Saving model to {output_dir}')
     state_dict = trainer.model.state_dict()
     if trainer.args.should_save:
         cpu_state_dict = {key: value.cpu() for key, value in state_dict.items()}
@@ -172,6 +173,8 @@ def train():
             torch_dtype=torch.bfloat16
         )
 
+        model.resize_token_embeddings(len(tokenizer))
+
     if training_args.local_rank == 0:
         print("Load model from {} over.".format(model_args.model_name_or_path))
 
@@ -182,7 +185,6 @@ def train():
         split="train",
         cache_dir=training_args.cache_dir
     )
-    #raw_train_datasets = tfrecord_to_datasets([data_args.data_path])
 
     if training_args.local_rank > 0:
         torch.distributed.barrier()
