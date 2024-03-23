@@ -1,6 +1,7 @@
 import argparse
 import copy
 import json
+import os
 import sys
 
 from pathlib import Path
@@ -8,6 +9,10 @@ from pathlib import Path
 
 arcade_root = ("/mnt/sdd2/ywen/code/arcade_lm_eval/bigcode-evaluation-harness/"
                "lm_eval/tasks/arcade_assets")
+arcade_root = os.getenv("ARCADE_ROOT")
+if not arcade_root:
+    arcade_root = ("/mnt/sdd2/ywen/code/arcade_lm_eval/bigcode-evaluation-harness/"
+                   "lm_eval/tasks/arcade_assets")
 sys.path.insert(0, arcade_root)
 from arcade_nl2code.annotated_dataset import dataset as dataset_module
 
