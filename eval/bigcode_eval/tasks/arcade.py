@@ -221,7 +221,8 @@ class GeneralArcade(Task):
         :return: str
         """
         from arcade_nl2code.evaluation.processors import extract_first_cell_block
-        return extract_first_cell_block(generation[self.prompt_lens[idx]:])
+        #return extract_first_cell_block(generation[self.prompt_lens[idx]:])
+        return extract_first_cell_block(generation)
 
     def process_results(self, generations, references):
         # TODO: define how the evaluation score is computed from list of \

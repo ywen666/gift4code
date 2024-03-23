@@ -1,0 +1,16 @@
+# arcade-nl2code deps.
+tensorflow-cpu
+absl-py
+pandas
+dacite
+nbformat
+dill
+sacrebleu
+astor
+folium
+seaborn
+vega
+bokeh
+plotly
+matplotlib
+chart_studio
