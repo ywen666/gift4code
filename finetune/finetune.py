@@ -158,7 +158,7 @@ def train():
         trust_remote_code=True
     )
     if not tokenizer.pad_token:
-        tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        tokenizer.pad_token = tokenizer.eos_token
 
     print("PAD Token:", tokenizer.pad_token, tokenizer.pad_token_id)
     print("BOS Token", tokenizer.bos_token, tokenizer.bos_token_id)
@@ -172,8 +172,6 @@ def train():
             model_args.model_name_or_path,
             torch_dtype=torch.bfloat16
         )
-
-        model.resize_token_embeddings(len(tokenizer))
 
     if training_args.local_rank == 0:
         print("Load model from {} over.".format(model_args.model_name_or_path))
