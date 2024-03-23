@@ -11,7 +11,7 @@ def create_tf_example(target, id_value):
     }
     return tf.train.Example(features=tf.train.Features(feature=feature))
 
-def write_tfrecords(file_name, num_examples=2500):
+def write_tfrecords(file_name, num_examples=30000):
     with tf.io.TFRecordWriter(file_name) as writer:
         for i in range(num_examples):
             target = "# In[ ]:\n\n\nimport pandas as pd\nimport numpy as np\n\n\n\n# In[ ]:\n\n\ndf = pd.read_csv('load_data.csv')"

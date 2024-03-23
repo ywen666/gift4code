@@ -10,10 +10,12 @@ from transformers import Trainer
 from datasets import Dataset, Features, Value, DatasetDict
 from datasets import load_dataset
 import tensorflow as tf
+import deepspeed
 
 
 IGNORE_INDEX = -100
 EOT_TOKEN = "<|EOT|>"
+
 
 @dataclass
 class ModelArguments:
@@ -101,20 +103,6 @@ def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedToken
     )
 
 
-#def preprocess(
-#    sources: Sequence[str],
-#    targets: Sequence[str],
-#    tokenizer: transformers.PreTrainedTokenizer,
-#) -> Dict:
-#    """Preprocess the data by tokenizing."""
-#    examples = [s + t for s, t in zip(sources, targets)]
-#    examples_tokenized, sources_tokenized = [_tokenize_fn(strings, tokenizer) for strings in (examples, sources)]
-#    input_ids = examples_tokenized["input_ids"]
-#
-#    labels = copy.deepcopy(input_ids)
-#    for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
-#        label[:source_len] = IGNORE_INDEX
-#    return dict(input_ids=input_ids, labels=labels)
 def preprocess(
     targets: Sequence[str],
     tokenizer: transformers.PreTrainedTokenizer,
@@ -124,6 +112,7 @@ def preprocess(
     input_ids = examples_tokenized["input_ids"]
     labels = copy.deepcopy(input_ids)
     return dict(input_ids=input_ids, labels=labels)
+
 
 @dataclass
 class DataCollatorForSupervisedDataset(object):
@@ -145,10 +134,12 @@ class DataCollatorForSupervisedDataset(object):
             attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
         )
 
+
 def train_tokenize_function(examples, tokenizer):
     targets = [f"{output}\n{EOT_TOKEN}" for output in examples['targets']]
     data_dict = preprocess(targets, tokenizer)
     return data_dict
+
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
@@ -175,22 +166,23 @@ def train():
     if training_args.local_rank == 0:
         print("Load tokenizer from {} over.".format(model_args.model_name_or_path))
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
-        torch_dtype=torch.bfloat16
-    )
+    with deepspeed.zero.Init():
+        model = transformers.AutoModelForCausalLM.from_pretrained(
+            model_args.model_name_or_path,
+            torch_dtype=torch.bfloat16
+        )
 
     if training_args.local_rank == 0:
         print("Load model from {} over.".format(model_args.model_name_or_path))
 
 
-    #raw_train_datasets = load_dataset(
-    #    'json',
-    #    data_files=data_args.data_path,
-    #    split="train",
-    #    cache_dir=training_args.cache_dir
-    #)
-    raw_train_datasets = tfrecord_to_datasets([data_args.data_path])
+    raw_train_datasets = load_dataset(
+        'json',
+        data_files=data_args.data_path,
+        split="train",
+        cache_dir=training_args.cache_dir
+    )
+    #raw_train_datasets = tfrecord_to_datasets([data_args.data_path])
 
     if training_args.local_rank > 0:
         torch.distributed.barrier()

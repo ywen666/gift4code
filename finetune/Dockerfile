@@ -32,11 +32,11 @@ WORKDIR /workspace/gift4code/finetune
 
 # Set the required environment variables (replace <value> with actual paths/values)
 ENV HF_HOME=/workspace/huggingface
-ENV DATA_PATH=/workspace/gift4code/finetune/gift4code.tfrecord
+ENV TF_DATA_PATH=/workspace/gift4code/finetune/gift4code.tfrecord
+ENV DATA_PATH=/workspace/gift4code/finetune/gift4code.json
 ENV OUTPUT_PATH=/workspace/gift4code/finetune/results
 ENV MODEL_PATH=bigcode/starcoder2-15b
 
-RUN pip uninstall -y torch_xla
 
 # Execute the script
 CMD ["bash", "ft.sh"]
