@@ -40,9 +40,9 @@ def create_all_tasks():
                 super().__init__(mode)
 
         return Arcade
-
+        
     return {
-        f"arcade-{mode}": create_task(mode) for mode in ["base", "iosummary", "ioexample", "iotype"]
+        f"arcade-{mode}-{context}": create_task(f"{mode}_{context}") for mode in ["base", "iosummary", "ioexample", "iotype"] for context in ["withcontext", "nocontext"]
     }
 
 
@@ -62,8 +62,9 @@ class GeneralArcade(Task):
         #self._data_code = self._src / "annotated_dataset"
         self._data_code = pathlib.Path("arcade_nl2code/annotated_dataset")
         #self._data_root = self._data_code / "dataset/new_tasks/derived_datasets"
-        if mode not in ["base", "iosummary", "ioexample", "iotype"]:
-            raise ValueError("mode has to be either base, iosummary, ioexample or iotype")
+        available_modes = [f"{mode}_{context}" for mode in ["base", "iosummary", "ioexample", "iotype"] for context in ["withcontext", "nocontext"]]
+        if mode not in available_modes:
+            raise ValueError(f"mode has to be either one of {available_modes}")
         self.data_name = f"arcade_{mode}.json"
         #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix-1.maxctxcell-1.json"
         #self.data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix900.maxctxcell-1.e0_1_4_5.vanilla_prompting.json"
