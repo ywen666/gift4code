@@ -24,7 +24,10 @@ def create_cmd(args):
         --save_generations_path {args.output_path}/starcoder2_arcade${args.mode}_temp${args.temp}.json \
         --generation_only \
         --save_generations"""
-    # --limit 5 \
+
+    if args.limit > 0:
+       cmd += f' --limit {args.limit}'
+
     return cmd
 
 
@@ -51,6 +54,11 @@ def main():
       '--temp',
       type=float,
       required=True,
+  )
+  arg_parser.add_argument(
+      '--limit',
+      type=int,
+      default=0,
   )
 
   args = arg_parser.parse_args()
