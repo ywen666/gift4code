@@ -23,8 +23,8 @@ def create_cmd(args):
         --precision bf16 \
         --save_generations_path {args.output_path}/starcoder2_arcade${args.mode}_temp${args.temp}.json \
         --generation_only \
-        --limit 5 \
         --save_generations"""
+    # --limit 5 \
     return cmd
 
 
