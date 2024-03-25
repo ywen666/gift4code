@@ -38,9 +38,9 @@ def create_all_tasks():
         class Arcade(GeneralArcade):
             def __init__(self):
                 super().__init__(mode)
-                
-        return Arcade   
-        
+
+        return Arcade
+
     return {
         f"arcade-{mode}": create_task(mode) for mode in ["base", "iosummary", "ioexample", "iotype"]
     }
@@ -221,8 +221,7 @@ class GeneralArcade(Task):
         :return: str
         """
         from arcade_nl2code.evaluation.processors import extract_first_cell_block
-        #return extract_first_cell_block(generation[self.prompt_lens[idx]:])
-        return extract_first_cell_block(generation)
+        return extract_first_cell_block(generation[self.prompt_lens[idx]:])
 
     def process_results(self, generations, references):
         # TODO: define how the evaluation score is computed from list of \
