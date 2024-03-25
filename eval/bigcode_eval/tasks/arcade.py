@@ -55,11 +55,13 @@ class GeneralArcade(Task):
             stop_words=["# In[ ]:"], requires_execution=True
         )
         self.mode = mode
-        self._dir = pathlib.Path(__file__).parent / "arcade_assets"
-        self._dir.mkdir(parents=True, exist_ok=True)
-        self._src = self._dir / "arcade_nl2code"
-        self._data_code = self._src / "annotated_dataset"
-        self._data_root = self._data_code / "dataset/new_tasks/derived_datasets"
+        #self._dir = pathlib.Path(__file__).parent / "arcade_assets"
+        #self._dir.mkdir(parents=True, exist_ok=True)
+        #self._src = self._dir / "arcade_nl2code"
+        self._dir = pathlib.Path("arcade-nl2code")
+        #self._data_code = self._src / "annotated_dataset"
+        self._data_code = pathlib.Path("arcade_nl2code/annotated_dataset")
+        #self._data_root = self._data_code / "dataset/new_tasks/derived_datasets"
         if mode not in ["base", "iosummary", "ioexample", "iotype"]:
             raise ValueError("mode has to be either base, iosummary, ioexample or iotype")
         self.data_name = f"arcade_{mode}.json"
