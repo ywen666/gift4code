@@ -4,13 +4,11 @@ FROM us-docker.pkg.dev/deeplearning-platform-release/gcr.io/pytorch-gpu.2-2.py31
 WORKDIR /workspace
 RUN git clone https://github.com/ywen666/gift4code.git
 
-WORKDIR /workspace/gift4code
-RUN pip install -r requirements.txt
-
 # Set the working directory to the 'eval' directory within the cloned repo
 WORKDIR /workspace/gift4code/eval
 
-RUN pip3 install .
+RUN pip install -r requirements.txt
+RUN pip install .
 
 ENV HF_HOME=/workspace/huggingface
 ENV OUTPUT_PATH=/workspace/gift4code/eval
