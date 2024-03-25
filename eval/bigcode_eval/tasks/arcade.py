@@ -177,7 +177,8 @@ class GeneralArcade(Task):
 
         flatten_dataset = []
         self.prompt_lens = dict()
-        dataset = dataset_module.load_dataset(self._data_root / self.data_name)
+        #dataset = dataset_module.load_dataset(self._data_root / self.data_name)
+        dataset = dataset_module.load_dataset(self.data_name)
         total = 0
         for episode in dataset:
             for turn_id, turn in enumerate(episode["turns"]):
