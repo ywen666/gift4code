@@ -35,7 +35,7 @@ def main():
       type=str,
       default='./checkpoints/bigcode-starcoder',
   )
-  available_mode = [f"{mode}_{context}" for mode in ["base", "iosummary", "ioexample", "iotype"] for context in ["withcontext", "nocontext"]]
+  available_modes = [f"{mode}-{context}" for mode in ["base", "iosummary", "ioexample", "iotype"] for context in ["withcontext", "nocontext"]]
   arg_parser.add_argument(
       '--mode',
       type=str,
