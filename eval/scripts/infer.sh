@@ -18,5 +18,5 @@ accelerate launch main.py \
   --save_generations_path ${OUTPUT_PATH}/starcoder2_arcade${MODE}_temp${TEMP}.json \
   --generation_only \
   --save_generations
-  #--limit 2 \
-#Uncomment --limit 2 to run inference on only first 30 examples for prototyping
+#--limit 5 \
+#Uncomment --limit 5 to run inference on only first 30 examples for prototyping
