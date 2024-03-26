@@ -59,4 +59,4 @@ if __name__ == '__main__':
 
     Path(save_folder).mkdir(parents=True, exist_ok=True)
     dataset_module.save_dataset(predictions, save_folder / "raw_predictions.jsonl")
-    print(f"save raw predictions to '{save_folder}'/raw_predictions.jsonl")
+    print(f"save raw predictions to {str(save_folder)} /raw_predictions.jsonl")
