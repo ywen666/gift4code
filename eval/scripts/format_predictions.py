@@ -21,6 +21,13 @@ def generate_dataset_predictions(dataset, predictions):
     final_predictions = []
     prediction_idx = 0
 
+    EOT_TOKEN = "<|EOT|>"
+    def truncate_until_special_token(x, special_token):
+        if special_token in x:
+            return x.split(special_token)[0]
+        else:
+            return x
+
     for episode in dataset:
         episode_prediction = dict(
             metadata={k: v for k, v in episode.items() if k != 'turns'},
@@ -30,7 +37,8 @@ def generate_dataset_predictions(dataset, predictions):
         for turn_example in episode['turns']:
             turn_pred_entry = dict(
                 metadata=dict(example=turn_example),
-                predictions=copy.deepcopy(predictions[prediction_idx]),
+                predictions=[truncate_until_special_token(pred, EOT_TOKEN)
+                             for pred in predictions[prediction_idx]],
             )
 
             episode_prediction['turns'].append(turn_pred_entry)
