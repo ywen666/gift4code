@@ -45,31 +45,18 @@ def generate_dataset_predictions(dataset, predictions):
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--lm_generation_result', required=True)
-    arg_parser.add_argument(
-        "--few_shot",
-        action="store_true",
-        help="whether use the few-shot dataset"
-    )
+    arg_parser.add_argument('--save_folder', required=True)
+    arg_parser.add_argument('--dataset_path', required=True)
     args = arg_parser.parse_args()
 
-    data_root = Path(arcade_root) / "arcade_nl2code/annotated_dataset/dataset/new_tasks/derived_datasets"
-    if args.few_shot:
-        data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix-1.maxctxcell-1.json"
-        print("use the few shot dataset")
-    else:
-        data_name = "dataset.schema.originating_dfs.header_description.after_variable_cell.maxp2100.maxp_no_prefix900.maxctxcell-1.e0_1_4_5.vanilla_prompting.json"
-        print("use the NON few shot dataset")
-    dataset = dataset_module.load_dataset(Path(data_root) / data_name)
+    dataset = dataset_module.load_dataset(args.dataset_path)
 
-    #result_path = "results/codellama13b_instruct_temp0.8.json"
     with open(args.lm_generation_result, "r") as f:
         lm_generation_predictions = json.load(f)
     predictions = generate_dataset_predictions(dataset, lm_generation_predictions)
 
-    eval_folder = Path(
-        arcade_root) / "arcade_nl2code/evaluation/results" / Path(
-            args.lm_generation_result).stem
+    save_folder = Path(args.save_folder) / Path(args.lm_generation_result).stem
 
-    Path(eval_folder).mkdir(parents=True, exist_ok=True)
-    dataset_module.save_dataset(predictions, eval_folder / "raw_predictions.jsonl")
-    print(f"save raw predictions to '{eval_folder}'/raw_predictions.jsonl")
+    Path(save_folder).mkdir(parents=True, exist_ok=True)
+    dataset_module.save_dataset(predictions, save_folder / "raw_predictions.jsonl")
+    print(f"save raw predictions to '{save_folder}'/raw_predictions.jsonl")
