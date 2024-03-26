@@ -44,7 +44,7 @@ def generate_dataset_predictions(dataset, predictions):
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--lm_eval_result', required=True)
+    arg_parser.add_argument('--lm_generation_result', required=True)
     arg_parser.add_argument(
         "--few_shot",
         action="store_true",
@@ -62,13 +62,13 @@ if __name__ == '__main__':
     dataset = dataset_module.load_dataset(Path(data_root) / data_name)
 
     #result_path = "results/codellama13b_instruct_temp0.8.json"
-    with open(args.lm_eval_result, "r") as f:
-        lm_eval_predictions = json.load(f)
-    predictions = generate_dataset_predictions(dataset, lm_eval_predictions)
+    with open(args.lm_generation_result, "r") as f:
+        lm_generation_predictions = json.load(f)
+    predictions = generate_dataset_predictions(dataset, lm_generation_predictions)
 
     eval_folder = Path(
         arcade_root) / "arcade_nl2code/evaluation/results" / Path(
-            args.lm_eval_result).stem
+            args.lm_generation_result).stem
 
     Path(eval_folder).mkdir(parents=True, exist_ok=True)
     dataset_module.save_dataset(predictions, eval_folder / "raw_predictions.jsonl")
