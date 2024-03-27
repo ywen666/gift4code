@@ -53,7 +53,7 @@ def generate_dataset_predictions(dataset, predictions):
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--lm_generation_result', required=True)
-    arg_parser.add_argument('--save_folder', required=True)
+    arg_parser.add_argument('--output_path', required=True)
     arg_parser.add_argument('--dataset_path', required=True)
     args = arg_parser.parse_args()
 
@@ -63,8 +63,6 @@ if __name__ == '__main__':
         lm_generation_predictions = json.load(f)
     predictions = generate_dataset_predictions(dataset, lm_generation_predictions)
 
-    save_folder = Path(args.save_folder) / Path(args.lm_generation_result).stem
-
-    Path(save_folder).mkdir(parents=True, exist_ok=True)
-    dataset_module.save_dataset(predictions, save_folder / "raw_predictions.jsonl")
-    print(f"save raw predictions to {str(save_folder)} /raw_predictions.jsonl")
+    Path(args.output_path).parent.mkdir(parents=True, exist_ok=True)
+    dataset_module.save_dataset(predictions, args.output_path)
+    print(f"saved predictions to {str(args.output_path)}")
