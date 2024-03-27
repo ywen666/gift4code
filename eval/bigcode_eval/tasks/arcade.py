@@ -185,6 +185,7 @@ class GeneralArcade(Task):
         total = 0
         for episode in dataset:
             for turn_id, turn in enumerate(episode["turns"]):
+                turn.input = turn.input.strip()
                 current_data = dict(
                     turn=turn,
                     turn_id=turn_id,
