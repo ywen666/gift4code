@@ -21,7 +21,7 @@ def create_cmd(args):
         --trust_remote_code \
         --allow_code_execution \
         --precision bf16 \
-        --save_generations_path {args.output_path}/starcoder2_arcade${args.mode}_temp${args.temp}.json \
+        --save_generations_path {args.output_path}/starcoder2_arcade{args.mode}_temp{args.temp}.json \
         --generation_only \
         --save_generations"""
 
