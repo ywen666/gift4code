@@ -1,5 +1,6 @@
 import fnmatch
 import json
+import pathlib
 import warnings
 
 import datasets
@@ -337,6 +338,8 @@ def main():
                     print("generation mode only")
                 generations, references, _ = evaluator.generate_text(task)
                 if accelerator.is_main_process:
+                    pathlib.Path(args.save_generations_path).parent.mkdir(parents=True, exist_ok=True)
+
                     with open(args.save_generations_path, "w") as fp:
                         json.dump(generations, fp)
                         print(f"generations were saved at {args.save_generations_path}")

@@ -2,10 +2,8 @@ import argparse
 import logging
 import os
 import pathlib
+import sys
 import time
-
-
-logger = logging.getLogger(__name__)
 
 
 def create_cmd(args):
@@ -16,7 +14,7 @@ def create_cmd(args):
         --max_new_tokens 128 \
         --temperature {args.temp} \
         --do_sample True \
-        --n_samples 40 \
+        --n_samples 50 \
         --batch_size 8 \
         --trust_remote_code \
         --allow_code_execution \
@@ -53,7 +51,7 @@ def main():
   arg_parser.add_argument(
       '--temp',
       type=float,
-      required=True,
+      default=0.8,
   )
   arg_parser.add_argument(
       '--limit',
@@ -63,24 +61,30 @@ def main():
 
   args = arg_parser.parse_args()
 
-  logger.info('Args: %s', args)
+  print(f'Args: {args}', file=sys.stderr)
 
   model_name_or_path = args.model_name_or_path
   if model_name_or_path.startswith('gs://'):
-    logger.info('Copying model: %s', model_name_or_path)
+    print(f'Copying model: {model_name_or_path}', file=sys.stderr)
     pathlib.Path('/tmp/checkpoints').mkdir(parents=True, exist_ok=True)
-
+    
+    os.system(f'gsutil ls {model_name_or_path}')
     t0 = time.time()
     os.system(f'gsutil -m cp -r {model_name_or_path} /tmp/checkpoints')
-    logger.info('Time taken to copy model: %ss', time.time() - t0)
 
-    logger.info(
-        'Content of local ckpt folder: %s', os.listdir('/tmp/checkpoints'))
+    print(f'Time taken to copy model: {time.time() - t0}s', file=sys.stderr)
+
+    print(
+        f'Content of local ckpt folder: {os.listdir("/tmp/checkpoints")}',
+        file=sys.stderr)
     args.model_name_or_path = os.path.join(
         '/tmp/checkpoints', os.path.basename(model_name_or_path))
 
   cmd = create_cmd(args)
-  logging.info('CMD: %s', cmd)
+  print(f'CMD: {cmd}')
+  sys.stdout.flush()
+  sys.stderr.flush()
+
   os.system(cmd)
 
 

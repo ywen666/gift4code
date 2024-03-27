@@ -20,6 +20,11 @@ RUN gsutil version
 # Clone the specified repository
 WORKDIR /workspace
 COPY . /workspace
+RUN git clone https://github.com/google-research/arcade-nl2code.git /workspace/arcade-nl2code.tmp
+RUN mv /workspace/arcade-nl2code.tmp/arcade_nl2code /workspace
+RUN rm -rf /workspace/arcade-nl2code.tmp
+RUN ls /workspace
+
 RUN pip --no-cache-dir install -r /workspace/requirements.txt
 
 # Make 1000 UID and root user as owners of the workspace.
@@ -34,4 +39,4 @@ ENV TRITON_CACHE_DIR="/tmp/triton"
 ENV HF_HOME="/tmp/transformer"
 
 # Execute the script
-ENTRYPOINT ["python3", "entrypoint.py"]
+ENTRYPOINT ["python3", "-u", "entrypoint.py"]
