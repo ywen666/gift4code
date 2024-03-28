@@ -22,6 +22,7 @@ def generate_dataset_predictions(dataset, predictions):
     prediction_idx = 0
 
     EOT_TOKEN = "<|EOT|>"
+    END_TOKEN = "# The generated code is executable"
     def truncate_until_special_token(x, special_token):
         if special_token in x:
             return x.split(special_token)[0]
@@ -35,10 +36,13 @@ def generate_dataset_predictions(dataset, predictions):
         )
 
         for turn_example in episode['turns']:
+            processed_predictions = [truncate_until_special_token(pred, EOT_TOKEN)
+                                     for pred in predictions[prediction_idx]]
+            processed_predictions = [truncate_until_special_token(pred, END_TOKEN)
+                                     for pred in processed_predictions]
             turn_pred_entry = dict(
                 metadata=dict(example=turn_example),
-                predictions=[truncate_until_special_token(pred, EOT_TOKEN)
-                             for pred in predictions[prediction_idx]],
+                predictions=processed_predictions,
             )
 
             episode_prediction['turns'].append(turn_pred_entry)
