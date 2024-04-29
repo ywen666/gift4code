@@ -183,6 +183,8 @@ def train():
         split="train",
         cache_dir=training_args.cache_dir
     )
+    raw_train_datasets, raw_valid_datasets = raw_train_datasets.train_test_split(
+        test_size=0.05).values()
 
     if training_args.local_rank > 0:
         torch.distributed.barrier()
@@ -197,6 +199,15 @@ def train():
         desc="Running Encoding",
         fn_kwargs={ "tokenizer": tokenizer }
     )
+    valid_dataset = raw_valid_datasets.map(
+        train_tokenize_function,
+        batched=True,
+        batch_size=3000,
+        num_proc=32,
+        remove_columns=raw_valid_datasets.column_names,
+        desc="Running Encoding",
+        fn_kwargs={ "tokenizer": tokenizer }
+    )
 
     if training_args.local_rank == 0:
         torch.distributed.barrier()
@@ -208,7 +219,11 @@ def train():
             print(f"Sample {index} of the training set: {tokenizer.decode(list(train_dataset[index]['input_ids']))}.")
 
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
-    data_module = dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
+    data_module = dict(
+        train_dataset=train_dataset,
+        eval_dataset=valid_dataset,
+        data_collator=data_collator
+    )
 
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
 
