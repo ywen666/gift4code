@@ -107,11 +107,14 @@ def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedToken
 def preprocess(
     targets: Sequence[str],
     tokenizer: transformers.PreTrainedTokenizer,
+    source_len: Optional[int] = None,
 ) -> Dict:
     """Preprocess the data by tokenizing."""
     examples_tokenized = _tokenize_fn(targets, tokenizer)
     input_ids = examples_tokenized["input_ids"]
     labels = copy.deepcopy(input_ids)
+    if source_len is not None:
+        label[:source_len] = IGNORE_INDEX
     return dict(input_ids=input_ids, labels=labels)
 
 
